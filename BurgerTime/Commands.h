@@ -5,6 +5,7 @@
 #include "PointsComponent.h"
 #include "GameObject.h"
 #include "Command.h"
+#include "ServiceLocator.h"
 
 namespace dae
 {
@@ -84,4 +85,22 @@ namespace dae
 	private:
 		std::shared_ptr<GameObject> m_PointsObject;
 	};
+
+	class PlaySound : public Command
+	{
+	public:
+		PlaySound(const std::string& path)
+			:m_Path{path}
+		{
+		}
+		void Execute() override
+		{
+			dae::ServiceLocator::GetSoundManager()->QueueAudio(m_Path);
+		};
+	private:
+		const std::string m_Path;
+	};
+
+
+
 }

@@ -8,6 +8,7 @@
 #include "GameObject.h"
 #include "Scene.h"
 #include <chrono>
+#include "ServiceLocator.h"
 
 //-------components---------
 #include "TextureComponent.h"
@@ -54,6 +55,8 @@ void dae::Minigin::Initialize()
 	}
 
 	Renderer::GetInstance().Init(m_Window);
+
+	ServiceLocator::RegisterSoundManager(std::make_shared<SoundManager>());	
 }
 
 /**
@@ -178,6 +181,7 @@ void dae::Minigin::LoadGame() const
 void dae::Minigin::Cleanup()
 {
 	Renderer::GetInstance().Destroy();
+	ServiceLocator::RegisterSoundManager(nullptr);
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	SDL_Quit();

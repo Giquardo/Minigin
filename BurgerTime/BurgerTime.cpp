@@ -133,6 +133,8 @@ void dae::BurgerTime::LoadGame() const
 	input.SetButtonCommand(0, XboxController::ControllerButton::Dpad_Down, new IncreasePointsCommand(PointsObj), InputState::Down);
 	input.SetButtonCommand(0, XboxController::ControllerButton::Dpad_Left, new IncreasePointsCommand(PointsObj2), InputState::Down);
 
+	input.SetButtonCommand(0, XboxController::ControllerButton::RightShoulder, new PlaySound("../Data/Sound/Game_Music.mp3"), InputState::Down);
+
 }
 
 
