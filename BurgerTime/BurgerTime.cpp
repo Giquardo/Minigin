@@ -15,11 +15,102 @@
 #include "HealthComponent.h"
 #include "PeterPepperComponent.h"
 #include "PointsComponent.h"
-
+#include "ButtonComponent.h"
 //--------------------------
+GameMode dae::BurgerTime::m_CurrentMode{};
 
+void dae::BurgerTime::LoadGame()
+{
+	LoadMainMenu();
+	LoadLevel01();
 
-void dae::BurgerTime::LoadGame() const
+	SceneManager::GetInstance().SetActiveScene("MainMenu");
+	InputManager::GetInstance().InMenu(true);
+}
+
+void dae::BurgerTime::SetMode(GameMode newMode)
+{
+	m_CurrentMode = newMode;
+}
+
+void dae::BurgerTime::LoadMainMenu()
+{
+	m_ActiveScene = SceneManager::GetInstance().CreateScene("MainMenu");
+
+	//Title
+	auto mainMenuObject = std::make_shared<GameObject>();
+	auto textureComp = std::make_shared<TextureComponent>(mainMenuObject);
+	textureComp->SetScale(3.f, 3.f);
+	textureComp->SetTexture("BurgerTimeTitle.png");
+	mainMenuObject->AddComponent(textureComp);
+	auto TransformComp = std::make_shared<TransformComponent>(mainMenuObject);
+	mainMenuObject->AddComponent(TransformComp);
+	mainMenuObject->GetComponent<TransformComponent>()->SetPosition(450, 20);
+	m_ActiveScene->Add(mainMenuObject);
+
+	//Button
+	auto buttonObject = std::make_shared<GameObject>();
+	auto buttonTextureComp = std::make_shared<TextureComponent>(buttonObject);
+	buttonTextureComp->SetScale(3.f, 3.f);
+	buttonTextureComp->SetTexture("Arrow.png");
+	buttonObject->AddComponent(buttonTextureComp);
+	auto buttonComp = std::make_shared<ButtonComponent>(buttonObject);
+	buttonObject->AddComponent(buttonComp);
+	auto buttonTransformComp = std::make_shared<TransformComponent>(buttonObject);
+	buttonObject->AddComponent(buttonTransformComp);
+	switch (buttonObject->GetComponent<ButtonComponent>()->GetSelected())
+	{
+	case GameMode::Solo:
+		buttonObject->GetComponent<TransformComponent>()->SetPosition(550, 355);
+		break;
+	case GameMode::CoOp:
+		buttonObject->GetComponent<TransformComponent>()->SetPosition(550, 455);
+		break;
+	case GameMode::Versus:
+		buttonObject->GetComponent<TransformComponent>()->SetPosition(550, 555);
+		break;
+	default:
+		break;
+	}
+	m_ActiveScene->Add(buttonObject);
+
+	//SoloText
+	auto soloModeObject = std::make_shared<GameObject>();
+	auto font = ResourceManager::GetInstance().LoadFont("Retro_Bold.otf", 36);
+	auto textComponent = std::make_shared<TextComponent>("SOLO", font, soloModeObject, Color{ 255, 255, 255 });
+	soloModeObject->AddComponent(textComponent);
+	auto TransformSoloComp = std::make_shared<TransformComponent>(soloModeObject);
+	soloModeObject->AddComponent(TransformSoloComp);
+	soloModeObject->GetComponent<TransformComponent>().get()->SetPosition(600, 350);
+	m_ActiveScene->Add(soloModeObject);
+	
+	//CoOpText
+	auto coOpModeObject = std::make_shared<GameObject>();
+	textComponent = std::make_shared<TextComponent>("CO-OP", font, coOpModeObject, Color{ 255, 255, 255 });
+	coOpModeObject->AddComponent(textComponent);
+	auto TransformCoOPComp = std::make_shared<TransformComponent>(coOpModeObject);
+	coOpModeObject->AddComponent(TransformCoOPComp);
+	coOpModeObject->GetComponent<TransformComponent>().get()->SetPosition(600, 450);
+	m_ActiveScene->Add(coOpModeObject);
+	
+	//VersusText
+	auto versusModeObject = std::make_shared<GameObject>();
+	textComponent = std::make_shared<TextComponent>("VERSUS", font, versusModeObject, Color{ 255, 255, 255 });
+	versusModeObject->AddComponent(textComponent);
+	TransformComp = std::make_shared<TransformComponent>(versusModeObject);
+	versusModeObject->AddComponent(TransformComp);
+	versusModeObject->GetComponent<TransformComponent>().get()->SetPosition(600, 550);
+	m_ActiveScene->Add(versusModeObject);
+	
+	//input
+	auto& input = InputManager::GetInstance();
+	input.SetMenuButtonCommand(0, XboxController::ControllerButton::Dpad_Down, new SelectNext(buttonObject), InputState::Down);
+	input.SetMenuButtonCommand(0, XboxController::ControllerButton::Dpad_Up, new SelectPrev(buttonObject), InputState::Down);
+	input.SetMenuButtonCommand(0, XboxController::ControllerButton::ButtonB, new Confirm(buttonObject), InputState::Down);
+
+}
+
+void dae::BurgerTime::LoadLevel01()
 {
 	auto scene = SceneManager::GetInstance().CreateScene("Demo");
 
@@ -41,19 +132,9 @@ void dae::BurgerTime::LoadGame() const
 	backgroundObject->AddChild(logoObject);
 	//scene->Add(logoObject);
 
-	//Text
-	auto textObject = std::make_shared<GameObject>();
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto textComponent = std::make_shared<TextComponent>("Programming 4 Assignment", font, textObject, Color{ 255, 0, 0 });
-	textObject->AddComponent(textComponent);
-	textObject->GetComponent<TransformComponent>()->SetPosition(80, 20);
-	backgroundObject->AddChild(textObject);
-	//scene->Add(textObject);
-
-
 	//FPS Counter
 	auto FPSObject = std::make_shared<GameObject>();
-	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
+	auto font = ResourceManager::GetInstance().LoadFont("Retro.otf", 20);
 	const auto fpsComponent = std::make_shared<FPSComponent>("FpsCounter", font, FPSObject);
 	FPSObject->GetComponent<TextComponent>()->SetColor({ 255,255,0 });
 	FPSObject->AddComponent(fpsComponent);
@@ -70,7 +151,7 @@ void dae::BurgerTime::LoadGame() const
 	input.SetButtonCommand(0, XboxController::ControllerButton::ButtonY, new DuckCommand(), InputState::Down);
 
 	// P1
-	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 30);
+	font = ResourceManager::GetInstance().LoadFont("Retro.otf", 30);
 
 	auto playerObj1 = std::make_shared<GameObject>();
 	auto peter = std::make_shared<PeterPepperComponent>(playerObj1);
@@ -99,42 +180,11 @@ void dae::BurgerTime::LoadGame() const
 	HealthObj->GetComponent<TransformComponent>()->SetPosition(100, 250);
 	scene->Add(HealthObj);
 
-	// P2
-	auto playerObj2 = std::make_shared<GameObject>();
-	auto peter2 = std::make_shared<PeterPepperComponent>(playerObj2);
-	playerObj2->AddComponent(peter2);
-	auto P2Text = std::make_shared<TextComponent>("P2", font, playerObj2, Color(0, 255, 0));
-	playerObj2->AddComponent(P2Text);
-	playerObj2->GetComponent<TransformComponent>()->SetPosition(100, 400);
-	scene->Add(playerObj2);
-
-	// Points P2
-	auto PointsObj2 = std::make_shared<GameObject>();
-	auto points2 = std::make_shared<PointsComponent>(PointsObj2);
-	PointsObj2->AddComponent(points2);
-	auto pointsText2 = std::make_shared<TextComponent>(("Points: " + std::to_string(points2->GetPoints())), font, PointsObj2, Color(0, 255, 0));
-	PointsObj2->AddComponent(pointsText2);
-	PointsObj2->GetComponent<TransformComponent>()->SetPosition(100, 450);
-	scene->Add(PointsObj2);
-
-	// Lives P2
-	int maxLives2{ 3 };
-	auto HealthObj2 = std::make_shared<GameObject>();
-	auto healthComp2 = std::make_shared<HealthComponent>(HealthObj2, maxLives2);
-	HealthObj2->AddComponent(healthComp2);
-	auto livesText2 = std::make_shared<TextComponent>(("Lives: " + std::to_string(healthComp2->GetLives())), font, HealthObj2, Color(0, 255, 0));
-	HealthObj2->AddComponent(livesText2);
-	HealthObj2->GetComponent<TransformComponent>()->SetPosition(100, 500);
-	scene->Add(HealthObj2);
-
 	// commands input players
 	input.SetButtonCommand(0, XboxController::ControllerButton::Dpad_Up, new DamageCommand(HealthObj), InputState::Down);
-	input.SetButtonCommand(0, XboxController::ControllerButton::Dpad_Right, new DamageCommand(HealthObj2), InputState::Down);
 	input.SetButtonCommand(0, XboxController::ControllerButton::Dpad_Down, new IncreasePointsCommand(PointsObj), InputState::Down);
-	input.SetButtonCommand(0, XboxController::ControllerButton::Dpad_Left, new IncreasePointsCommand(PointsObj2), InputState::Down);
 
 	input.SetButtonCommand(0, XboxController::ControllerButton::RightShoulder, new PlaySound("../Data/Sound/Game_Music.mp3"), InputState::Down);
 
+	input.SetButtonCommand(0, XboxController::ControllerButton::GamepadStart, new OpenMenu(), InputState::Down);
 }
-
-

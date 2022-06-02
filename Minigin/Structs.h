@@ -9,7 +9,7 @@ struct Color
 	uint8_t a{ 255 };
 };
 
-struct Size
+struct Vector2f
 {
 	int x;
 	int y;
@@ -20,5 +20,12 @@ enum class Event
 	LivesChanged,
 	ScoreChanged,
 	PlayerDied,
-	
+
+};
+
+enum class GameMode
+{
+	Solo,
+	CoOp,
+	Versus
 };

@@ -16,6 +16,8 @@ namespace dae
 
 		const glm::vec3& GetPosition() const { return m_Position; }
 		void SetPosition(float x, float y, float z = 0.0f);
+		void IncreaseY(float value);
+		void DecreaseY(float value);
 
 		virtual void Update(float) override {};
 		virtual void FixedUpdate(float) override {};

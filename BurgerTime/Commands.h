@@ -6,6 +6,8 @@
 #include "GameObject.h"
 #include "Command.h"
 #include "ServiceLocator.h"
+#include "ButtonComponent.h"
+#include "BurgerTime.h"
 
 namespace dae
 {
@@ -101,6 +103,77 @@ namespace dae
 		const std::string m_Path;
 	};
 
+	class SelectNext final : public Command
+	{
+	public:
+		SelectNext(std::shared_ptr<GameObject> pGameObject)
+			:m_ButtonObject{ pGameObject }
+		{
+		};
 
+		void Execute() override
+		{
+			auto buttonComp = m_ButtonObject->GetComponent<ButtonComponent>();
+			buttonComp->SelectNext();
+			std::cout << "Selected Next \n";
+		}
 
+	private:
+		std::shared_ptr<GameObject> m_ButtonObject;
+	};
+
+	class SelectPrev final : public Command
+	{
+	public:
+		SelectPrev(std::shared_ptr<GameObject> pGameObject)
+			:m_ButtonObject{ pGameObject }
+		{
+		};
+
+		void Execute() override
+		{
+			auto buttonComp = m_ButtonObject->GetComponent<ButtonComponent>();
+			buttonComp->SelectPrev();
+			std::cout << "Selected Prev \n";
+		}
+
+	private:
+		std::shared_ptr<GameObject> m_ButtonObject;
+	};
+
+	class Confirm final : public Command
+	{
+	public:
+		Confirm(std::shared_ptr<GameObject> pGameObject)
+			:m_ButtonObject{ pGameObject }
+		{
+		};
+
+		void Execute() override
+		{
+			dae::BurgerTime::SetMode(m_ButtonObject->GetComponent<ButtonComponent>()->GetSelected());
+			std::cout << "confirmed \n";
+			SceneManager::GetInstance().SetActiveScene("Demo");
+			InputManager::GetInstance().InMenu(false);
+		}
+
+	private:
+		std::shared_ptr<GameObject> m_ButtonObject;
+	};
+
+	class OpenMenu final : public Command
+	{
+	public:
+		OpenMenu()
+		{
+		};
+
+		void Execute() override
+		{
+			SceneManager::GetInstance().SetActiveScene("MainMenu");
+			InputManager::GetInstance().InMenu(true);
+		}
+
+	private:
+	};
 }

@@ -62,7 +62,7 @@ void dae::Minigin::Initialize()
 /**
  * Code constructing the scene world starts here
  */
-void dae::Minigin::LoadGame() const
+void dae::Minigin::LoadGame()
 {
 	//auto scene = SceneManager::GetInstance().CreateScene("Demo");
 

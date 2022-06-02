@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BurgerTime.cpp" />
+    <ClCompile Include="ButtonComponent.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PeterPepperComponent.cpp" />
@@ -171,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BurgerTime.h" />
+    <ClInclude Include="ButtonComponent.h" />
     <ClInclude Include="Commands.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="pch.h" />

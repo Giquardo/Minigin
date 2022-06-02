@@ -13,3 +13,13 @@ void dae::TransformComponent::SetPosition(const float x, const float y, const fl
 	m_Position.y = y;
 	m_Position.z = z;
 }
+
+void dae::TransformComponent::IncreaseY(float value)
+{
+	m_Position.y += value;
+}
+
+void dae::TransformComponent::DecreaseY(float value)
+{
+	m_Position.y -= value;
+}

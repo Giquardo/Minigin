@@ -28,12 +28,16 @@ namespace dae
 
 			bool ProcessInput();
 			void SetButtonCommand(int controllerIndex, XboxController::ControllerButton button, Command* command, InputState InputState);
-
+			void SetMenuButtonCommand(int controllerIndex, XboxController::ControllerButton button, Command* command, InputState InputState);
+			void RemoveButtonCommand(int controllerIndex, XboxController::ControllerButton button);
+			void RemoveMenuButtonCommand(int controllerIndex, XboxController::ControllerButton button);
+			void InMenu(bool inMenu);
 		private:
 
 			std::vector<XboxController*> m_pControllers;
-
+			bool m_IsMenu;
 			std::map<std::pair<int, XboxController::ControllerButton>, std::pair<std::unique_ptr<Command>, InputState>> m_Commands;
+			std::map<std::pair<int, XboxController::ControllerButton>, std::pair<std::unique_ptr<Command>, InputState>> m_MenuCommands;
 	};
 
 }

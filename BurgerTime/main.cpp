@@ -6,7 +6,8 @@
 
 #include "BurgerTime.h"
  
-int main(int, char* []) {
+int main(int, char* []) 
+{
 	dae::BurgerTime  game;
 	game.Run();
 	return 0;

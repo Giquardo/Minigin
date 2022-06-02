@@ -4,8 +4,6 @@
 #include "ResourceManager.h"
 #include "BaseComponent.h"
 
-
-
 void dae::GameObject::Update(float deltaTime)
 {
 	for (auto pComponent : m_pComponents)
